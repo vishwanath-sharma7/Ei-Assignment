@@ -14,6 +14,11 @@ class Draggable {
     this.h = h;
     this.offsetX = 0;
     this.offsetY = 0;
+    this.circle = {
+      x: 0,
+      y: 0,
+      radius: 130
+    }
   }
 
   over() {
@@ -81,10 +86,21 @@ class Mirror extends Draggable {
     push()
     translate(this.x + this.w / 2, this.y + this.h / 2)
     rotate(this.rotation)
+
+    // circle 
+    if (this.y > 250) {
+      noFill()
+      stroke(20)
+      ellipse(this.circle.x, this.circle.y, this.circle.radius)
+    }
+
     fill(120)
+    noStroke()
     rect(-this.w / 2, -this.h / 2, this.w, this.h);
     fill(255, 0, 0,)
     ellipse(0, 0, 5)
+
+
     pop()
   }
 
@@ -193,8 +209,6 @@ function draw() {
   slab.show();
 
 
-
-
 }
 
 function mousePressed() {
@@ -213,7 +227,6 @@ function mouseReleased() {
     if (mirror.y > 200) {
       mirror.x = 380;
       mirror.y = 380;
-      mirror.rotation = 30
     } else {
       mirror.x = 200;
       mirror.y = 100;
