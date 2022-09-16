@@ -58,11 +58,14 @@ class Draggable {
     this.dragging = false;
   }
 
+
 }
 
 class Mirror extends Draggable {
-  constructor(x, y, w, h, offsetX, offsetY) {
+
+  constructor(x, y, w, h, rotation, offsetX, offsetY,) {
     super(x, y, w, h, offsetX, offsetY);
+    this.rotation = rotation;
   }
 
   show() {
@@ -75,14 +78,23 @@ class Mirror extends Draggable {
     } else {
       fill(175, 200);
     }
-    rect(this.x, this.y, this.w, this.h);
+    push()
+    translate(this.x + this.w / 2, this.y + this.h / 2)
+    rotate(this.rotation)
+    fill(120)
+    rect(-this.w / 2, -this.h / 2, this.w, this.h);
+    fill(255, 0, 0,)
+    ellipse(0, 0, 5)
+    pop()
   }
 
 }
 
 class Slab extends Draggable {
-  constructor(x, y, w, h, offsetX, offsetY) {
+  constructor(x, y, w, h, rotation, offsetX, offsetY) {
     super(x, y, w, h, offsetX, offsetY);
+    this.rotation = rotation;
+
   }
 
   show() {
@@ -97,11 +109,7 @@ class Slab extends Draggable {
     }
     rect(this.x, this.y, this.w, this.h);
   }
-
-
 }
-
-
 
 let mirror;
 let slab;
@@ -111,8 +119,8 @@ function setup() {
   angleMode(DEGREES);
 
 
-  mirror = new Mirror(200, 100, 40, 80);
-  slab = new Slab(550, 100, 40, 80);
+  mirror = new Mirror(200, 100, 20, 100, 0);
+  slab = new Slab(550, 100, 40, 80, 30);
 }
 
 function draw() {
@@ -128,23 +136,54 @@ function draw() {
   rect(30, 275, 740, 300);
 
   // light
-  strokeWeight(10);
-  stroke(255, 255, 255, 200);
-  line(155, 425, 390, 425);
+  if (mirror.y < 380 && slab.y < 380) {
+    strokeWeight(10);
+    stroke(255, 255, 255, 200);
+    line(155, 425, 765, 425);
+  } else {
+    strokeWeight(10);
+    stroke(255, 255, 255, 200);
+    line(155, 425, 380, 425);
+
+    //need to check for mirror or slab
+    push()
+    translate(380, 425)
+    if (mirror.y === 380) {
+      rotate(mirror.rotation * 2)
+      console.log(mirror.rotation)
+      stroke(255, 0, 0)
+      line(0, 0, -400, 0)
+    }
+
+    pop()
+
+    // if (slab.y === 380) {
+    //   push()
+    //   translate(380, 425)
+    //   rotate(slab.rotation)
+    //   stroke(255, 0, 0)
+    //   line(0, 0, 4, 425)
+    //   pop()
+    // }
+
+
+
+
+
+  }
 
   //torch
   push();
+  img.resize(100, 100);
   translate(100, 425);
   rotate(90);
   image(img, 0 - img.width / 2, 0 - img.width / 2);
   imageMode(CENTER);
-  img.resize(100, 100);
   pop();
 
   noStroke();
 
   // mirror area
-
   mirror.over();
   mirror.update();
   mirror.show();
@@ -152,7 +191,6 @@ function draw() {
   slab.over();
   slab.update();
   slab.show();
-  console.log(mirror.x, mirror.y)
 
 
 
@@ -168,9 +206,14 @@ function mouseReleased() {
 
   if (mirror.rollover) {
 
+    if (slab.y === 380) {
+      slab.x = 550;
+      slab.y = 100;
+    }
     if (mirror.y > 200) {
       mirror.x = 380;
       mirror.y = 380;
+      mirror.rotation = 30
     } else {
       mirror.x = 200;
       mirror.y = 100;
@@ -181,6 +224,13 @@ function mouseReleased() {
   }
 
   if (slab.rollover) {
+
+
+    if (mirror.y === 380) {
+      mirror.x = 200;
+      mirror.y = 100;
+    }
+
     if (slab.y > 200) {
       slab.x = 380;
       slab.y = 380;
@@ -191,6 +241,4 @@ function mouseReleased() {
     slab.released();
   }
 
-
-  // 
 }
