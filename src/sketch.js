@@ -57,14 +57,16 @@ class Draggable {
     // Quit dragging
     this.dragging = false;
   }
+
 }
 
 class Mirror extends Draggable {
   constructor(x, y, w, h, offsetX, offsetY) {
     super(x, y, w, h, offsetX, offsetY);
   }
+
   show() {
-    stroke(0);
+    noStroke()
     // Different fill based on state
     if (this.dragging) {
       fill(50);
@@ -75,6 +77,7 @@ class Mirror extends Draggable {
     }
     rect(this.x, this.y, this.w, this.h);
   }
+
 }
 
 class Slab extends Draggable {
@@ -94,32 +97,11 @@ class Slab extends Draggable {
     }
     rect(this.x, this.y, this.w, this.h);
   }
+
+
 }
 
-// function Mirror() {
-//   this.height = 80;
-//   this.width = 20;
-//   this.position = { x: 250, y: 90 };
 
-//   this.draw = () => {
-//     fill(255, 0, 0);
-//     rect(this.position.x, this.position.y, this.width, this.height);
-//   };
-// }
-
-// function Slab() {
-//   this.height = 80;
-//   this.width = 40;
-//   this.position = { x: 400, y: 90 }
-
-//   this.draw = () => {
-//     noFill()
-//     strokeWeight(5)
-//     stroke(255, 0, 0)
-//     rect(this.position.x, this.position.y, this.width, this.height)
-//     // rect(width / 2, 390, 20, 80)
-//   }
-// }
 
 let mirror;
 let slab;
@@ -127,14 +109,14 @@ let slab;
 function setup() {
   createCanvas(800, 600);
   angleMode(DEGREES);
-  // mirror = new Mirror();
-  // slab = new Slab()
+
 
   mirror = new Mirror(200, 100, 40, 80);
   slab = new Slab(550, 100, 40, 80);
 }
 
 function draw() {
+
   background(102);
   noStroke();
 
@@ -170,13 +152,11 @@ function draw() {
   slab.over();
   slab.update();
   slab.show();
+  console.log(mirror.x, mirror.y)
 
-  //dummy mirror
-  // fill(255, 0, 0)
-  // rect(width / 2, 390, 20, 80)
 
-  // mirror.draw();
-  // slab.draw();
+
+
 }
 
 function mousePressed() {
@@ -185,6 +165,32 @@ function mousePressed() {
 }
 
 function mouseReleased() {
-  mirror.released();
-  slab.released();
+
+  if (mirror.rollover) {
+
+    if (mirror.y > 200) {
+      mirror.x = 380;
+      mirror.y = 380;
+    } else {
+      mirror.x = 200;
+      mirror.y = 100;
+    }
+
+
+    mirror.released();
+  }
+
+  if (slab.rollover) {
+    if (slab.y > 200) {
+      slab.x = 380;
+      slab.y = 380;
+    } else {
+      slab.x = 550;
+      slab.y = 100;
+    }
+    slab.released();
+  }
+
+
+  // 
 }
