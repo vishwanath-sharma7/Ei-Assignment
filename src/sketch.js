@@ -8,12 +8,11 @@ function preload() {
 function Mirror() {
   this.height = 80;
   this.width = 20;
-  this.position = { x: 250, y: 90 }
+  this.position = { x: 250, y: 90 };
 
   this.draw = () => {
     fill(255, 0, 0)
     rect(this.position.x, this.position.y, this.width, this.height)
-    // rect(width / 2, 390, 20, 80)
   }
 }
 
@@ -79,3 +78,4 @@ function draw() {
   slab.draw()
 
 }
+
