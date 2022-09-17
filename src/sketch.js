@@ -1,4 +1,6 @@
 let img;
+const mirrorRotation = 0;
+const slabRotation = 45;
 
 function preload() {
   img = loadImage("../img/flashlight.svg");
@@ -90,11 +92,11 @@ class Mirror extends Draggable {
     // circle 
     if (this.y > 250) {
       noFill()
-      stroke(20)
+      stroke(70)
       ellipse(this.circle.x, this.circle.y, this.circle.radius)
     }
 
-    fill(120)
+    fill(255)
     noStroke()
     rect(-this.w / 2, -this.h / 2, this.w, this.h);
 
@@ -131,12 +133,12 @@ class Slab extends Draggable {
     // circle 
     if (this.y > 250) {
       noFill()
-      stroke(20)
+      stroke(70)
       strokeWeight(5)
       ellipse(this.circle.x, this.circle.y, this.circle.radius)
     }
 
-    stroke(120)
+    stroke(255)
     strokeWeight(10)
     // noStroke()
     rect(-this.w / 2, -this.h / 2, this.w, this.h);
@@ -149,18 +151,45 @@ class Slab extends Draggable {
 
 let mirror;
 let slab;
+let slider1;
+let slider2;
+
+
 
 function setup() {
   createCanvas(800, 600);
   angleMode(DEGREES);
 
-  mirror = new Mirror(200, 100, 20, 100, 45);
-  slab = new Slab(550, 100, 40, 100, -45);
+  mirror = new Mirror(200, 100, 20, 100, mirrorRotation);
+  slab = new Slab(550, 100, 40, 100, slabRotation);
+
+  createSlider(0, 1, [20], [50])
+  slider1 = createSlider(-45, 45, 0, 0);
+  slider1.position(width / 1.1, 110);
+  slider1.style('width', '80px');
+
+  createSlider(-45, 45, [20], [5])
+  slider2 = createSlider(-30, 30, 0, 0);
+  slider2.position(width / 1.1, 150);
+  slider2.style('width', '80px');
 }
+
+
 
 function draw() {
 
-  background(180, 180, 255);
+  let val1 = slider1.value();
+
+  mirror.rotation = val1
+  text("s", 10, 10, 70, 80);
+
+  let val2 = slider2.value();
+
+  slab.rotation = val2
+
+
+
+  background(104);
   noStroke();
 
   //shelf
@@ -241,7 +270,7 @@ function draw() {
         if (l < 0) {
           fill(255, 0, 0)
           // ellipse(0, 0, 1)
-          line(5, l - 5, 500, l - 3)
+          line(20, l - 5, 500, l - 3)
         }
 
         pop()
@@ -254,7 +283,7 @@ function draw() {
   }
 
   if (slab.y > 300 && slab.rotation === 0) {
-    strokeWeight(30);
+    strokeWeight(5);
     stroke(255, 255, 255, 200);
     line(155, 425, 765, 425);
   }
@@ -298,12 +327,11 @@ function mouseReleased() {
     if (mirror.y > 200) {
       mirror.x = 380;
       mirror.y = 380;
+      mirror.draggable = false;
     } else {
       mirror.x = 200;
       mirror.y = 100;
     }
-
-
     mirror.released();
   }
 
@@ -318,6 +346,8 @@ function mouseReleased() {
     if (slab.y > 200) {
       slab.x = 380;
       slab.y = 380;
+      mirror.draggable = false;
+
     } else {
       slab.x = 550;
       slab.y = 100;

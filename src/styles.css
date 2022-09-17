@@ -3,6 +3,11 @@
     padding: 0px;
     box-sizing: border-box;
 }
+body {
+    background:black;
+    overflow-y: hidden
+
+}
 
 
 main{
@@ -12,5 +17,19 @@ main{
     align-items: center;
     height: 100vh;
     width: 100%;
+}
+
+h3 {
+    color: white;
+    position: absolute;
+    top: 40px;
+    width: 100%;
+    text-align: center;
+    
+}
+
+.text {
+    position: absolute;
+    top:70px;
 }
 
