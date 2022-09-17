@@ -97,8 +97,7 @@ class Mirror extends Draggable {
     fill(120)
     noStroke()
     rect(-this.w / 2, -this.h / 2, this.w, this.h);
-    fill(255, 0, 0,)
-    ellipse(0, 0, 5)
+
 
 
     pop()
@@ -106,6 +105,8 @@ class Mirror extends Draggable {
 
 }
 
+
+//Glass Slab
 class Slab extends Draggable {
   constructor(x, y, w, h, rotation, offsetX, offsetY) {
     super(x, y, w, h, offsetX, offsetY);
@@ -123,7 +124,26 @@ class Slab extends Draggable {
     } else {
       stroke(175, 200);
     }
-    rect(this.x, this.y, this.w, this.h);
+    push()
+    translate(this.x + this.w / 2, this.y + this.h / 2)
+    rotate(slab.rotation)
+
+    // circle 
+    if (this.y > 250) {
+      noFill()
+      stroke(20)
+      strokeWeight(5)
+      ellipse(this.circle.x, this.circle.y, this.circle.radius)
+    }
+
+    stroke(120)
+    strokeWeight(10)
+    // noStroke()
+    rect(-this.w / 2, -this.h / 2, this.w, this.h);
+
+
+
+    pop()
   }
 }
 
@@ -134,14 +154,13 @@ function setup() {
   createCanvas(800, 600);
   angleMode(DEGREES);
 
-
   mirror = new Mirror(200, 100, 20, 100, 0);
-  slab = new Slab(550, 100, 40, 80, 30);
+  slab = new Slab(550, 100, 40, 100, 45);
 }
 
 function draw() {
 
-  background(102);
+  background(180, 180, 255);
   noStroke();
 
   //shelf
@@ -151,41 +170,66 @@ function draw() {
   //activity area
   rect(30, 275, 740, 300);
 
+
   // light
   if (mirror.y < 380 && slab.y < 380) {
-    strokeWeight(10);
-    stroke(255, 255, 255, 200);
+    strokeWeight(30);
+    stroke(255, 255, 255);
     line(155, 425, 765, 425);
   } else {
-    strokeWeight(10);
+    strokeWeight(30);
     stroke(255, 255, 255, 200);
     line(155, 425, 380, 425);
 
+
     //need to check for mirror or slab
-    push()
-    translate(380, 425)
-    if (mirror.y === 380) {
-      rotate(mirror.rotation * 2)
-      console.log(mirror.rotation)
-      stroke(255, 0, 0)
-      line(0, 0, -400, 0)
+    if (mirror.y > 200) {
+
+      push()
+      translate(380, 425)
+      if (mirror.y === 380) {
+        rotate(mirror.rotation * 2)
+        stroke(255, 255, 255, 200)
+        line(0, 0, -400, 0)
+      }
+
+      pop()
+    } else if (slab.y === 380) {
+      push()
+      translate(380, 425)
+      if (slab.y === 380) {
+        //angle of refraction
+        rotate(asin(sin(slab.rotation / 1.6)) - 180)
+        console.log(asin(sin(slab.rotation / 1.6)))
+
+        stroke(255, 255, 255, 200)
+        line(0, 0, -(slab.w), 0)
+      }
+
+      pop()
+
+      if (slab.rotation > 0) {
+
+        const thickness = slab.w;
+
+        const l = thickness * (sin(slab.rotation - asin(sin(slab.rotation / 1.6))) / cos(asin(sin(slab.rotation / 1.6))))
+
+        push()
+        translate(400, 425)
+        fill(255, 0, 0)
+        // ellipse(0, 0, 1)
+        line(30, l, 500, l)
+        pop()
+
+      }
     }
 
-    pop()
+  }
 
-    // if (slab.y === 380) {
-    //   push()
-    //   translate(380, 425)
-    //   rotate(slab.rotation)
-    //   stroke(255, 0, 0)
-    //   line(0, 0, 4, 425)
-    //   pop()
-    // }
-
-
-
-
-
+  if (slab.y > 300 && slab.rotation === 0) {
+    strokeWeight(30);
+    stroke(255, 255, 255, 200);
+    line(155, 425, 765, 425);
   }
 
   //torch
