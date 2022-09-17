@@ -154,8 +154,8 @@ function setup() {
   createCanvas(800, 600);
   angleMode(DEGREES);
 
-  mirror = new Mirror(200, 100, 20, 100, 0);
-  slab = new Slab(550, 100, 40, 100, 45);
+  mirror = new Mirror(200, 100, 20, 100, 45);
+  slab = new Slab(550, 100, 40, 100, -45);
 }
 
 function draw() {
@@ -173,11 +173,11 @@ function draw() {
 
   // light
   if (mirror.y < 380 && slab.y < 380) {
-    strokeWeight(30);
+    strokeWeight(5);
     stroke(255, 255, 255);
     line(155, 425, 765, 425);
   } else {
-    strokeWeight(30);
+    strokeWeight(5);
     stroke(255, 255, 255, 200);
     line(155, 425, 380, 425);
 
@@ -214,12 +214,39 @@ function draw() {
 
         const l = thickness * (sin(slab.rotation - asin(sin(slab.rotation / 1.6))) / cos(asin(sin(slab.rotation / 1.6))))
 
+
         push()
         translate(400, 425)
-        fill(255, 0, 0)
-        // ellipse(0, 0, 1)
-        line(30, l, 500, l)
+
+        if (l > 0) {
+          fill(255, 0, 0)
+          // ellipse(0, 0, 1)
+          line(20, l + 3, 500, l + 3)
+        }
+
         pop()
+
+      }
+
+      if (slab.rotation < 0) {
+
+        const thickness = slab.w;
+
+        const l = thickness * (sin(slab.rotation - asin(sin(slab.rotation / 1.6))) / cos(asin(sin(slab.rotation / 1.6))))
+
+
+        push()
+        translate(400, 425)
+
+        if (l < 0) {
+          fill(255, 0, 0)
+          // ellipse(0, 0, 1)
+          line(5, l - 5, 500, l - 3)
+        }
+
+        pop()
+
+
 
       }
     }
