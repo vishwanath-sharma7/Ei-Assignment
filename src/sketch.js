@@ -1,10 +1,10 @@
-let img;
-const mirrorRotation = 0;
-const slabRotation = 45;
 
+//initialise torch svg
+let img;
 function preload() {
   img = loadImage("../img/flashlight.svg");
 }
+
 
 class Draggable {
   constructor(x, y, w, h) {
@@ -24,7 +24,7 @@ class Draggable {
   }
 
   over() {
-    // Is mouse over object
+    // Is mouse over object ?
     if (
       mouseX > this.x &&
       mouseX < this.x + this.w &&
@@ -46,7 +46,7 @@ class Draggable {
   }
 
   pressed() {
-    // Did I click on the rectangle?
+    // Is rectangle being clicked?
     if (
       mouseX > this.x &&
       mouseX < this.x + this.w &&
@@ -59,52 +59,30 @@ class Draggable {
       this.offsetY = this.y - mouseY;
     }
   }
-
   released() {
-    // Quit dragging
+    // Stop dragging
     this.dragging = false;
   }
-
-
 }
 
 class Mirror extends Draggable {
 
-  constructor(x, y, w, h, rotation, offsetX, offsetY,) {
+  constructor(x, y, w, h, rotation, offsetX, offsetY) {
     super(x, y, w, h, offsetX, offsetY);
     this.rotation = rotation;
   }
 
   show() {
     noStroke()
-    // Different fill based on state
-    if (this.dragging) {
-      fill(50);
-    } else if (this.rollover) {
-      fill(100);
-    } else {
-      fill(175, 200);
-    }
     push()
     translate(this.x + this.w / 2, this.y + this.h / 2)
     rotate(this.rotation)
-
-    // circle 
-    if (this.y > 250) {
-      noFill()
-      stroke(70)
-      ellipse(this.circle.x, this.circle.y, this.circle.radius)
-    }
-
+    // draw mirror
     fill(255)
     noStroke()
     rect(-this.w / 2, -this.h / 2, this.w, this.h);
-
-
-
     pop()
   }
-
 }
 
 
@@ -113,56 +91,42 @@ class Slab extends Draggable {
   constructor(x, y, w, h, rotation, offsetX, offsetY) {
     super(x, y, w, h, offsetX, offsetY);
     this.rotation = rotation;
-
   }
 
   show() {
     noFill();
-    // Different fill based on state
-    if (this.dragging) {
-      stroke(50);
-    } else if (this.rollover) {
-      stroke(100);
-    } else {
-      stroke(175, 200);
-    }
     push()
     translate(this.x + this.w / 2, this.y + this.h / 2)
     rotate(slab.rotation)
-
-    // circle 
-    if (this.y > 250) {
-      noFill()
-      stroke(70)
-      strokeWeight(5)
-      ellipse(this.circle.x, this.circle.y, this.circle.radius)
-    }
-
     stroke(255)
     strokeWeight(10)
-    // noStroke()
+    //draw slab
     rect(-this.w / 2, -this.h / 2, this.w, this.h);
-
-
-
     pop()
   }
 }
 
+
 let mirror;
 let slab;
+
+//helpers
 let slider1;
 let slider2;
 
 
-
+// Initialise 
 function setup() {
   createCanvas(800, 600);
   angleMode(DEGREES);
 
-  mirror = new Mirror(200, 100, 20, 100, mirrorRotation);
-  slab = new Slab(550, 100, 40, 100, slabRotation);
+  //new Mirror
+  mirror = new Mirror(200, 100, 20, 100, 0);
+  //new Slab
+  slab = new Slab(550, 100, 40, 100, 0);
 
+
+  //Rotation Control Sliders
   createSlider(0, 1, [20], [50])
   slider1 = createSlider(-45, 45, 0, 0);
   slider1.position(width / 1.1, 110);
@@ -176,27 +140,28 @@ function setup() {
 
 
 
+//Animation Loop
 function draw() {
 
+  //update rotation based on input from sliders
   let val1 = slider1.value();
-
   mirror.rotation = val1
-  text("s", 10, 10, 70, 80);
 
   let val2 = slider2.value();
-
   slab.rotation = val2
 
 
-
+  //set Background
   background(104);
   noStroke();
 
-  //shelf
+  //Shelf containing mirror and slab
   fill(1);
   rect(30, 30, 740, 200);
 
-  //activity area
+
+
+  //Activity area
   rect(30, 275, 740, 300);
 
 
@@ -211,9 +176,8 @@ function draw() {
     line(155, 425, 380, 425);
 
 
-    //need to check for mirror or slab
+    //check for mirror or slab
     if (mirror.y > 200) {
-
       push()
       translate(380, 425)
       if (mirror.y === 380) {
@@ -221,7 +185,6 @@ function draw() {
         stroke(255, 255, 255, 200)
         line(0, 0, -400, 0)
       }
-
       pop()
     } else if (slab.y === 380) {
       push()
@@ -230,65 +193,52 @@ function draw() {
         //angle of refraction
         rotate(asin(sin(slab.rotation / 1.6)) - 180)
         console.log(asin(sin(slab.rotation / 1.6)))
-
         stroke(255, 255, 255, 200)
         line(0, 0, -(slab.w), 0)
       }
-
       pop()
 
+      //update shape based on +ve rotation
       if (slab.rotation > 0) {
-
         const thickness = slab.w;
-
         const l = thickness * (sin(slab.rotation - asin(sin(slab.rotation / 1.6))) / cos(asin(sin(slab.rotation / 1.6))))
-
-
         push()
         translate(400, 425)
-
         if (l > 0) {
           fill(255, 0, 0)
           // ellipse(0, 0, 1)
           line(20, l + 3, 500, l + 3)
         }
-
         pop()
-
       }
-
+      //update shape based on -ve rotation
       if (slab.rotation < 0) {
-
         const thickness = slab.w;
-
         const l = thickness * (sin(slab.rotation - asin(sin(slab.rotation / 1.6))) / cos(asin(sin(slab.rotation / 1.6))))
 
 
         push()
         translate(400, 425)
-
         if (l < 0) {
           fill(255, 0, 0)
           // ellipse(0, 0, 1)
           line(20, l - 5, 500, l - 3)
         }
-
         pop()
-
-
-
       }
     }
-
   }
 
+  // if neither mirror nor slab are present
   if (slab.y > 300 && slab.rotation === 0) {
     strokeWeight(5);
     stroke(255, 255, 255, 200);
     line(155, 425, 765, 425);
   }
 
-  //torch
+
+
+  //Torch
   push();
   img.resize(100, 100);
   translate(100, 425);
@@ -296,10 +246,9 @@ function draw() {
   image(img, 0 - img.width / 2, 0 - img.width / 2);
   imageMode(CENTER);
   pop();
-
   noStroke();
 
-  // mirror area
+  // Mirror area
   mirror.over();
   mirror.update();
   mirror.show();
@@ -310,6 +259,8 @@ function draw() {
 
 
 }
+
+//helper functions
 
 function mousePressed() {
   mirror.pressed();
